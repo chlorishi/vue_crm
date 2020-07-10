@@ -1,7 +1,9 @@
 import Vue from "vue";
 import App from "./App.vue";
 import resource from "vue-resource";
-import store from './store/index'
+import echarts from "echarts";
+import router from "./router/router";
+import store from "./store/index";
 import {
     Button,
     Form,
@@ -17,7 +19,18 @@ import {
     Menu,
     MenuItem,
     MenuItemGroup,
-    Submenu
+    Submenu,
+    Col,
+    Row,
+    Table,
+    TableColumn,
+    Dialog,
+    Tag,
+    MessageBox,
+    Pagination,
+    DatePicker,
+    Radio,
+    Cascader
 } from "element-ui";
 Vue.use(Button);
 Vue.use(Form);
@@ -34,8 +47,20 @@ Vue.use(MenuItem);
 Vue.use(MenuItemGroup);
 Vue.use(Submenu);
 Vue.use(resource);
-Vue.prototype.$msg = Message;
+Vue.use(Col);
+Vue.use(Row);
+Vue.use(Table);
+Vue.use(TableColumn);
+Vue.use(Dialog);
+Vue.use(Tag);
+Vue.use(Pagination);
+Vue.use(DatePicker);
+Vue.use(Radio);
+Vue.use(Cascader);
 
+Vue.prototype.$echarts = echarts;
+Vue.prototype.$msg = Message;
+Vue.prototype.$confirm = MessageBox;
 // 判断登陆状态
 if (localStorage.token) {
     Vue.http.headers.common["Authorization"] = localStorage.token;
@@ -45,5 +70,6 @@ if (localStorage.token) {
 new Vue({
     el: "#app",
     render: h => h(App),
-    store
+    store,
+    router
 });

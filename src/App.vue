@@ -3,10 +3,6 @@
     <el-container>
       <el-aside style="width:auto">
         <!-- 导航 -->
-        <el-radio-group v-model="isCollapse" style="margin-bottom: 20px;">
-          <el-radio-button :label="false">展开</el-radio-button>
-          <el-radio-button :label="true">收起</el-radio-button>
-        </el-radio-group>
 
         <el-menu
           default-active="/mgr"
@@ -15,6 +11,7 @@
           :collapse-transition="false"
           :unique-opened="true"
           v-if="$store.state.menu.menu && $store.state.user.info.permissions"
+          router
         >
           <el-menu-item index="/">
             <i class="el-icon-location"></i>
@@ -33,7 +30,9 @@
               v-for="item1 in item.children"
               :key="item1.id"
               :index="item1.path"
-              :disabled="$store.state.user.info.permissions.indexOf(item1.path)==-1"
+              :disabled="
+                $store.state.user.info.permissions.indexOf(item1.path) == -1
+              "
             >
               <i :class="iconType[item1.id]"></i>
               <span slot="title">{{ item1.name }}{{ item1.path }}</span>
@@ -42,15 +41,38 @@
         </el-menu>
         <!-- 导航结束 -->
       </el-aside>
-      <el-main>{{
-        $store.state.user.info
-      }}</el-main>
+      <el-main
+        v-if="$store.state.user.info.profile && $store.state.user.menulist"
+      >
+        <!-- main头部 -->
+        <div class="main-header">
+          <div class="header-left">
+            <el-radio-group v-model="isCollapse" style="margin-bottom: 20px;">
+              <el-radio-button :label="false">展开</el-radio-button>
+              <el-radio-button :label="true">收起</el-radio-button>
+            </el-radio-group>
+          </div>
+          <div class="header-right">
+            <div class="userInfo-box">
+              当前账号:
+              <el-tag class="username-box"
+                ><router-link to="/info">{{
+                  $store.state.user.info.profile.name
+                }}</router-link></el-tag
+              >
+            </div>
+            <el-button type="danger" @click="clearUser">退出登录</el-button>
+          </div>
+        </div>
+
+        <div><router-view></router-view></div>
+      </el-main>
     </el-container>
   </div>
 </template>
 
 <script>
-import { http, listForRouter, info } from "./api/api";
+import { http, listForRouter, info, menulist } from "./api/api";
 export default {
   name: "app",
   data() {
@@ -85,11 +107,51 @@ export default {
         .get(http + info)
         .then(res => this.$store.commit("setInfo", res.data.data))
         .catch(err => (location.href = "./login.html"));
+    },
+    //获取操作项
+    getMenuList() {
+      this.$http
+        .get(http + menulist)
+        .then(res => {
+          var data = res.data.data;
+          var json = {};
+          //循环父级
+          data.forEach(item => {
+            item.children.forEach(item1 => {
+              this.$set(json, item1.url, item1.children);
+            });
+          });
+          this.$store.commit("setMenuList", json);
+        })
+        .catch(err => (location.href = "./login.html"));
+    },
+    //退出登录
+    clearUser() {
+      this.$confirm("您确定退出登录吗, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          localStorage.clear();
+          location.href = "./login.html";
+          this.$msg({
+            type: "success",
+            message: "退出成功!"
+          });
+        })
+        .catch(() => {
+          this.$msg({
+            type: "info",
+            message: "已取消操作"
+          });
+        });
     }
   },
   mounted() {
     this.getMenu();
     this.getInfo();
+    this.getMenuList();
   }
 };
 </script>
@@ -98,6 +160,7 @@ export default {
 * {
   margin: 0;
   padding: 0;
+  text-decoration: none;
 }
 .el-menu-vertical-demo:not(.el-menu--collapse) {
   width: 200px;
@@ -105,5 +168,32 @@ export default {
 }
 .el-menu-vertical-demo {
   min-height: 500px;
+}
+.el-main {
+  padding: 0;
+  overflow: hidden;
+  padding: 0 10px;
+}
+.main-header {
+  display: flex;
+  height: 60px;
+  justify-content: space-between;
+  align-items: center;
+}
+.header-right {
+  display: flex;
+  justify-content: space-between;
+  align-content: center;
+  height: 40px;
+}
+.el-radio-group {
+  margin: 0 !important;
+}
+.userInfo-box {
+  line-height: 40px;
+  margin-right: 10px;
+}
+.username-box {
+  font-size: 14px;
 }
 </style>
