@@ -34,7 +34,7 @@
         style="width: 100% ;margin:15px 0;"
         border
         highlight-current-row
-        @current-change="handleCurrentChange"
+        @current-change="handleCurrentChange1"
         ref="singleTable"
       >
         <el-table-column type="expand">
@@ -64,6 +64,9 @@
               <el-form-item label="邮箱">
                 <span>{{ props.row.email }}</span>
               </el-form-item>
+              <el-form-item label="生日">
+                <span>{{ props.row.birthday }}</span>
+              </el-form-item>
             </el-form>
           </template>
         </el-table-column>
@@ -84,16 +87,29 @@
       </el-pagination>
     </el-card>
     <!-- 添加用户对话框 -->
-    <mgr-add :type="btntype.mgrAdd" :resetClose="resetClose" tname="mgrAdd"></mgr-add>
+    <mgr-add
+      :type="btntype.mgrAdd"
+      :resetClose="resetClose"
+      tname="mgrAdd"
+    ></mgr-add>
+    <!-- 修改用户信息对话框 -->
+    <mgr-edit
+      :type="btntype.mgrEdit"
+      :resetClose="resetClose"
+      tname="mgrEdit"
+      :currentRow="currentRow"
+    ></mgr-edit>
   </div>
 </template>
 
 <script>
 import { http, userlist } from "../../api/api";
 import mgrAdd from "./mgrAdd";
+import mgrEdit from "./mgrEdit";
 export default {
   components: {
-    "mgr-add": mgrAdd
+    "mgr-add": mgrAdd,
+    "mgr-edit": mgrEdit
   },
   data() {
     return {
@@ -176,13 +192,13 @@ export default {
       }
     },
     //选择表格数据
-    handleCurrentChange(val) {
+    handleCurrentChange1(val) {
       this.currentRow = val;
     },
     //重置功能对话框
     resetClose(type) {
       this.btntype[type] = false;
-      this.getUserList()
+      this.getUserList();
     }
   }
 };

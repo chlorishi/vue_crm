@@ -1,56 +1,53 @@
 <template>
   <div>
     <el-dialog
-      title="添加用户"
+      title="修改用户"
       :visible.sync="dialogVisible"
       width="50%"
       @close="clearText(tname)"
     >
       <el-form
-        :model="addUserForm"
-        :rules="addUserFormRules"
-        ref="addUserFormRef"
+        :model="editUserForm"
+        :rules="editUserFormRules"
+        ref="editUserFormRef"
         label-width="100px"
-        v-if="deptData"
+        v-if="deptData && editUserForm"
       >
         <el-form-item label="账户" prop="account">
-          <el-input v-model="addUserForm.account"></el-input>
-        </el-form-item>
-        <el-form-item label="密码" prop="password">
-          <el-input v-model="addUserForm.password" type="password"></el-input>
+          <el-input v-model="editUserForm.account"></el-input>
         </el-form-item>
         <el-form-item label="姓名" prop="name">
-          <el-input v-model="addUserForm.name"></el-input>
+          <el-input v-model="editUserForm.name"></el-input>
         </el-form-item>
         <el-form-item label="生日" prop="birthday">
           <el-date-picker
             type="date"
             placeholder="选择日期"
-            v-model="addUserForm.birthday"
+            v-model="editUserForm.birthday"
             style="width: 100%;"
           ></el-date-picker>
         </el-form-item>
         <el-form-item label="性别" prop="sex">
-          <el-radio-group v-model="addUserForm.sex">
+          <el-radio-group v-model="editUserForm.sex">
             <el-radio label="1">男</el-radio>
             <el-radio label="2">女</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item label="邮箱" prop="email">
-          <el-input v-model="addUserForm.email"></el-input>
+          <el-input v-model="editUserForm.email"></el-input>
         </el-form-item>
         <el-form-item label="电话" prop="phone">
-          <el-input v-model="addUserForm.phone"></el-input>
+          <el-input v-model="editUserForm.phone"></el-input>
         </el-form-item>
         <el-form-item label="部门" prop="deptid">
           <el-cascader
             :options="deptData"
             :props="deptDataProps"
-            v-model="addUserForm.deptid"
+            v-model="editUserForm.deptid"
           ></el-cascader>
         </el-form-item>
         <el-form-item label="状态" prop="status">
-          <el-radio-group v-model="addUserForm.status">
+          <el-radio-group v-model="editUserForm.status">
             <el-radio label="1">启用</el-radio>
             <el-radio label="2">禁用</el-radio>
           </el-radio-group>
@@ -59,7 +56,7 @@
 
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="addUser">确 定 </el-button>
+        <el-button type="primary" @click="editUser">确 定 </el-button>
       </span>
     </el-dialog>
   </div>
@@ -71,17 +68,7 @@ export default {
   data() {
     return {
       dialogVisible: this.type,
-      addUserForm: {
-        account: "",
-        password: "",
-        name: "",
-        birthday: "",
-        sex: "1",
-        email: "",
-        phone: "",
-        deptid: "",
-        status: "1"
-      },
+      editUserForm: this.currentRow,
       deptData: [],
       deptDataProps: {
         label: "simplename",
@@ -89,13 +76,9 @@ export default {
         children: "children",
         expandTrigger: "hover"
       },
-      addUserFormRules: {
+      editUserFormRules: {
         account: [
           { required: true, message: "请输入账号", trigger: "blur" },
-          { min: 3, max: 15, message: "长度在 3 到 15 个字符", trigger: "blur" }
-        ],
-        password: [
-          { required: true, message: "请输入密码", trigger: "blur" },
           { min: 3, max: 15, message: "长度在 3 到 15 个字符", trigger: "blur" }
         ],
         name: [
@@ -111,18 +94,28 @@ export default {
       }
     };
   },
-  props: ["type", "resetClose", "tname"],
+  props: ["type", "resetClose", "tname", "currentRow"],
   mounted() {
     this.getDeptList();
   },
   watch: {
+    //对话框显示隐藏
     type() {
       this.dialogVisible = this.type;
+    },
+    //获取数据
+    currentRow() {
+      var json = {};
+      //   格式转换字符串
+      for (var i in this.currentRow) {
+        this.$set(json, i, this.currentRow[i].toString());
+      }
+      this.editUserForm = json;
     }
   },
   methods: {
     clearText(tname) {
-      this.$refs.addUserFormRef.resetFields();
+      this.$refs.editUserFormRef.resetFields();
       this.resetClose(tname);
     },
     //获取部门信息
@@ -145,24 +138,26 @@ export default {
       });
       return data;
     },
-    //添加用户
-    addUser() {
-      this.addUserForm.deptid = this.addUserForm.deptid[
-        this.addUserForm.deptid.length - 1
-      ];
-      this.addUserForm.birthday = this.setTimes(this.addUserForm.birthday);
-
-      this.$refs.addUserFormRef.validate(valid => {
+    //修改用户
+    editUser() {
+      //判断是否为数组
+      if (Array.isArray(this.editUserForm.deptid)) {
+        this.editUserForm.deptid = this.editUserForm.deptid[
+          this.editUserForm.deptid.length - 1
+        ];
+      }
+      this.editUserForm.birthday = this.setTimes(this.editUserForm.birthday);
+      this.$refs.editUserFormRef.validate(valid => {
         if (!valid) {
           return this.$msg.error("校验失败");
         }
         this.$http
-          .post(http + updateUser, this.addUserForm, { emulateJSON: true })
+          .post(http + updateUser, this.editUserForm, { emulateJSON: true })
           .then(res => {
             console.log(res);
-            this.$msg.success("添加用户成功");
+            this.$msg.success("修改用户成功");
             this.dialogVisible = false;
-            this.$refs.addUserFormRef.resetFields();
+            this.$refs.editUserFormRef.resetFields();
           })
           .catch(err => {
             if (err.data.message == "该用户已经注册") {
