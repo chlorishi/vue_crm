@@ -5,7 +5,7 @@
         <!-- 导航 -->
 
         <el-menu
-          default-active="/mgr"
+          :default-active="$route.path"
           class="el-menu-vertical-demo"
           :collapse="isCollapse"
           :collapse-transition="false"
@@ -77,7 +77,7 @@ export default {
   name: "app",
   data() {
     return {
-      isCollapse: true,
+      isCollapse: false,
       iconType: {
         1: "el-icon-setting",
         2: "el-icon-tickets",
@@ -99,14 +99,14 @@ export default {
       this.$http
         .get(http + listForRouter)
         .then(res => this.$store.commit("setMenu", res.data.data))
-        .catch(err => (location.href = "./login.html"));
+        .catch(err => this.$msg.error(err.data.message));
     },
     //获取当前账户信息
     getInfo() {
       this.$http
         .get(http + info)
         .then(res => this.$store.commit("setInfo", res.data.data))
-        .catch(err => (location.href = "./login.html"));
+        .catch(err => this.$msg.error(err.data.message));
     },
     //获取操作项
     getMenuList() {
@@ -123,7 +123,7 @@ export default {
           });
           this.$store.commit("setMenuList", json);
         })
-        .catch(err => (location.href = "./login.html"));
+        .catch(err => this.$msg.error(err.data.message));
     },
     //退出登录
     clearUser() {

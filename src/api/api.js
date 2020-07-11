@@ -18,8 +18,12 @@ const menulist = "/menu/list";
 const userlist = "/user/list";
 //获取部门数据
 const deptlist = "/dept/list";
-//添加、修改用户
+//添加、修改用户.删除DELETE
 const updateUser = "/user";
+//获取角色
+const roleTreeListByIdUser = "/role/roleTreeListByIdUser";
+//设置角色
+const setRole = "/user/setRole";
 module.exports = {
     http,
     login,
@@ -31,5 +35,7 @@ module.exports = {
     menulist,
     userlist,
     deptlist,
-    updateUser
+    updateUser,
+    roleTreeListByIdUser,
+    setRole
 };

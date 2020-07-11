@@ -30,7 +30,9 @@ import {
     Pagination,
     DatePicker,
     Radio,
-    Cascader
+    Cascader,
+    Option,
+    Select
 } from "element-ui";
 Vue.use(Button);
 Vue.use(Form);
@@ -57,16 +59,30 @@ Vue.use(Pagination);
 Vue.use(DatePicker);
 Vue.use(Radio);
 Vue.use(Cascader);
+Vue.use(Option);
+Vue.use(Select);
 
 Vue.prototype.$echarts = echarts;
 Vue.prototype.$msg = Message;
 Vue.prototype.$confirm = MessageBox;
 // 判断登陆状态
-if (localStorage.token) {
-    Vue.http.headers.common["Authorization"] = localStorage.token;
-} else {
-    location.href = "./login.html";
-}
+
+//拦截器
+Vue.http.interceptors.push((request, next) => {
+    //设置token请求头
+    if (localStorage.token) {
+        Vue.http.headers.common["Authorization"] = localStorage.token;
+    } else {
+        location.href = "./login.html";
+    }
+    next(response => {
+        if (response.status == 401) {
+            location.href = "./login.html";
+        }
+        return response;
+    });
+});
+
 new Vue({
     el: "#app",
     render: h => h(App),

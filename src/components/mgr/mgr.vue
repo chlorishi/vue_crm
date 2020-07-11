@@ -19,7 +19,7 @@
           <!-- 权限功能 -->
           <el-button
             type="primary"
-            v-for="item in this.$store.state.user.menulist[this.$route.path]"
+            v-for="item in menulist"
             :key="item.id"
             @click="btn(item.code)"
           >
@@ -34,7 +34,7 @@
         style="width: 100% ;margin:15px 0;"
         border
         highlight-current-row
-        @current-change="handleCurrentChange1"
+        @cell-click="handleCurrentChange1"
         ref="singleTable"
       >
         <el-table-column type="expand">
@@ -45,6 +45,9 @@
               </el-form-item>
               <el-form-item label="账号">
                 <span>{{ props.row.account }}</span>
+              </el-form-item>
+              <el-form-item label="角色">
+                <span>{{ props.row.roleName }}</span>
               </el-form-item>
               <el-form-item label="部门">
                 <span>{{ props.row.deptName }}</span>
@@ -99,6 +102,20 @@
       tname="mgrEdit"
       :currentRow="currentRow"
     ></mgr-edit>
+    <!-- 删除用户信息对话框 -->
+    <mgr-delete
+      :type="btntype.mgrDelete"
+      :resetClose="resetClose"
+      tname="mgrDelete"
+      :currentRow="currentRow"
+    ></mgr-delete>
+    <!-- 设置角色对话框 -->
+    <mgr-set-role
+      :type="btntype.mgrSetRole"
+      :resetClose="resetClose"
+      tname="mgrSetRole"
+      :currentRow="currentRow"
+    ></mgr-set-role>
   </div>
 </template>
 
@@ -106,10 +123,14 @@
 import { http, userlist } from "../../api/api";
 import mgrAdd from "./mgrAdd";
 import mgrEdit from "./mgrEdit";
+import mgrDelete from "./mgrDelete";
+import mgrSetRole from "./mgrSetRole";
 export default {
   components: {
     "mgr-add": mgrAdd,
-    "mgr-edit": mgrEdit
+    "mgr-edit": mgrEdit,
+    "mgr-delete": mgrDelete,
+    "mgr-set-role": mgrSetRole
   },
   data() {
     return {
@@ -128,9 +149,6 @@ export default {
         mgrAdd: false,
         mgrEdit: false,
         mgrDelete: false,
-        mgrReset: false,
-        mgrFreeze: false,
-        mgrUnfreeze: false,
         mgrSetRole: false
       },
       //被选中数据
@@ -154,10 +172,14 @@ export default {
       this.$http
         .get(http + userlist, { params: this.userListInfo })
         .then(res => {
-          this.tableData = res.data.data.records;
-          this.total = res.data.data.total;
+          if (res.data.msg == "成功") {
+            this.tableData = res.data.data.records;
+            this.total = res.data.data.total;
+          } else {
+            this.$msg.error(res.data.message);
+          }
         })
-        .catch(err => {});
+        .catch(err => this.$msg.error(err.data.message));
     },
     handleSizeChange(val) {
       this.userListInfo.limit = val;
@@ -199,6 +221,7 @@ export default {
     resetClose(type) {
       this.btntype[type] = false;
       this.getUserList();
+      this.currentRow = null;
     }
   }
 };

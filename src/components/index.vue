@@ -61,7 +61,7 @@ export default {
           }); 
           this.viewtype(this.typelist, this.num);
         })
-        .catch(err => (location.href = "./login.html"));
+        .catch(err => this.$msg.error(err.data.message));
     }
   }
 };

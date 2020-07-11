@@ -47,15 +47,15 @@ export default {
       passFormRules: {
         oldPassword: [
           { required: true, message: "请输入旧密码", trigger: "blur" },
-          { min: 3, max: 5, message: "长度在 3 到 15 个字符", trigger: "blur" }
+          { min: 3, max: 15, message: "长度在 3 到 15 个字符", trigger: "blur" }
         ],
         password: [
           { required: true, message: "请输入新密码", trigger: "blur" },
-          { min: 3, max: 5, message: "长度在 3 到 15 个字符", trigger: "blur" }
+          { min: 3, max: 15, message: "长度在 3 到 15 个字符", trigger: "blur" }
         ],
         rePassword: [
           { required: true, message: "请重复输入新密码", trigger: "blur" },
-          { min: 3, max: 5, message: "长度在 3 到 15 个字符", trigger: "blur" }
+          { min: 3, max: 15, message: "长度在 3 到 15 个字符", trigger: "blur" }
         ]
       }
     };
@@ -68,9 +68,6 @@ export default {
       this.dialogVisible = this.editDialogVisible;
     }
   },
-  //属性的结果会被缓存，除非依赖的响应式属性变化才会重新计算。主要当作属性来使用；
-  computed: {},
-  //方法表示一个具体的操作，主要书写业务逻辑；
   methods: {
     setPass() {
       this.$refs.passFormRef.validate(vaild => {
@@ -81,9 +78,13 @@ export default {
         this.$http
           .post(http + updatePwd, this.passForm, { emulateJSON: true })
           .then(res => {
-            console.log(res.data);
+            if (res.data.msg == "成功") {
+              this.$msg.success("修改成功");
+            } else {
+              this.$msg.error(res.data.msg);
+            }
           })
-          .catch(err => (location.href = "./login.html"));
+          .catch(err => this.$msg.error(err.data.message));
       });
 
       this.dialogVisible = false;
@@ -92,7 +93,7 @@ export default {
     //清空表单
     clearText() {
       this.$refs.passFormRef.resetFields();
-      this.btn()
+      this.btn();
     }
   }
 };

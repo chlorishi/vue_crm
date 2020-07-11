@@ -132,7 +132,7 @@ export default {
         .then(res => {
           this.deptData = this.childrenNull(res.data.data);
         })
-        .catch(err => (location.href = "./login.html"));
+        .catch(err => this.$msg.error(err.data.message));
     },
     //处理级联选择器
     childrenNull(data) {
@@ -159,16 +159,19 @@ export default {
         this.$http
           .post(http + updateUser, this.addUserForm, { emulateJSON: true })
           .then(res => {
-            console.log(res);
-            this.$msg.success("添加用户成功");
-            this.dialogVisible = false;
-            this.$refs.addUserFormRef.resetFields();
+            if (res.data.msg == "成功") {
+              this.$msg.success("添加用户成功");
+              this.dialogVisible = false;
+              this.$refs.addUserFormRef.resetFields();
+            } else {
+              this.$msg.error(res.data.message);
+            }
           })
           .catch(err => {
             if (err.data.message == "该用户已经注册") {
               this.$msg.error("该用户已经注册");
             } else {
-              location.href = "./login.html";
+              this.$msg.error(err.data.message);
             }
           });
       });
