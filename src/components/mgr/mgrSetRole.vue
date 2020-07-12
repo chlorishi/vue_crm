@@ -87,10 +87,12 @@ export default {
           params: { userId: this.currentRow.id, roleIds: this.form.roleIds }
         })
         .then(res => {
-          console.log(res);
           this.dialogVisible = false;
         })
-        .catch(err => this.$msg.error(err.data.message));
+        .catch(err => {
+          this.$msg.error(err.data.message);
+          this.dialogVisible = false;
+        });
     }
   }
 };

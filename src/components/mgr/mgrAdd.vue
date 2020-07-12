@@ -164,14 +164,16 @@ export default {
               this.dialogVisible = false;
               this.$refs.addUserFormRef.resetFields();
             } else {
-              this.$msg.error(res.data.message);
+              this.$msg.error(res.data.msg);
             }
           })
           .catch(err => {
             if (err.data.message == "该用户已经注册") {
               this.$msg.error("该用户已经注册");
+              this.dialogVisible = false;
             } else {
               this.$msg.error(err.data.message);
+              this.dialogVisible = false;
             }
           });
       });

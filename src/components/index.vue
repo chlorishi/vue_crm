@@ -58,7 +58,7 @@ export default {
           });
           this.num = res[1].data.data.map(item => {
             return item.articles;
-          }); 
+          });
           this.viewtype(this.typelist, this.num);
         })
         .catch(err => this.$msg.error(err.data.message));

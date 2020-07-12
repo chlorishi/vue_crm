@@ -8,6 +8,7 @@
           class="header-left"
           v-model="userListInfo.name"
           clearable
+          @clear="getUserList"
         >
           <el-button
             slot="append"
@@ -36,6 +37,7 @@
         highlight-current-row
         @cell-click="handleCurrentChange1"
         ref="singleTable"
+        max-height="740"
       >
         <el-table-column type="expand">
           <template slot-scope="props">

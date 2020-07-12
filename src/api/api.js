@@ -24,6 +24,14 @@ const updateUser = "/user";
 const roleTreeListByIdUser = "/role/roleTreeListByIdUser";
 //设置角色
 const setRole = "/user/setRole";
+//角色列表
+const rolelist = "/role/list";
+//角色添加,修改,删除
+const role = "/role";
+//根据角色id获取菜单树接口
+const menuTreeListByRoleId = "/menu/menuTreeListByRoleId";
+// 根据角色id配置菜单权限接口
+const savePermisson = "/role/savePermisson";
 module.exports = {
     http,
     login,
@@ -37,5 +45,9 @@ module.exports = {
     deptlist,
     updateUser,
     roleTreeListByIdUser,
-    setRole
+    setRole,
+    rolelist,
+    role,
+    menuTreeListByRoleId,
+    savePermisson
 };

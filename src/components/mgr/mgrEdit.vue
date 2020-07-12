@@ -158,7 +158,10 @@ export default {
             this.dialogVisible = false;
             this.$refs.editUserFormRef.resetFields();
           })
-          .catch(err => this.$msg.error(err.data.message));
+          .catch(err => {
+            this.$msg.error(err.data.message);
+            this.dialogVisible = false;
+          });
       });
     },
     //处理日期格式

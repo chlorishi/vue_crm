@@ -10,19 +10,19 @@
       <div class="del">
         您确定要删除
         <span>{{ currentRow.name }}</span>
-        该用户吗？
+        该角色吗？
       </div>
 
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="delUser">确 定 </el-button>
+        <el-button type="primary" @click="delRole">确 定 </el-button>
       </span>
     </el-dialog>
   </div>
 </template>
 
 <script>
-import { http, updateUser } from "../../api/api";
+import { http, role } from "../../api/api";
 export default {
   data() {
     return {
@@ -36,17 +36,18 @@ export default {
     }
   },
   methods: {
-    delUser() {
+    delRole() {
       this.$http
-        .delete(http + updateUser, {
-          params: { userId: this.currentRow.id }
+        .delete(http + role, {
+          params: { roleId: this.currentRow.id }
         })
         .then(res => {
           if (res.data.msg == "成功") {
-            this.$msg.success("删除用户成功");
+            this.$msg.success("删除角色成功");
             this.dialogVisible = false;
           } else {
             this.$msg.error(res.data.msg);
+            this.dialogVisible = false;
           }
         })
         .catch(err => {
