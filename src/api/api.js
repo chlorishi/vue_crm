@@ -32,6 +32,8 @@ const role = "/role";
 const menuTreeListByRoleId = "/menu/menuTreeListByRoleId";
 // 根据角色id配置菜单权限接口
 const savePermisson = "/role/savePermisson";
+//添加,修改部门
+const dept = "/dept";
 module.exports = {
     http,
     login,
@@ -49,5 +51,6 @@ module.exports = {
     rolelist,
     role,
     menuTreeListByRoleId,
-    savePermisson
+    savePermisson,
+    dept
 };

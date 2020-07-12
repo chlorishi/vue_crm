@@ -33,7 +33,8 @@ import {
     Cascader,
     Option,
     Select,
-    Tree
+    Tree,
+    Alert
 } from "element-ui";
 Vue.use(Button);
 Vue.use(Form);
@@ -63,6 +64,7 @@ Vue.use(Cascader);
 Vue.use(Option);
 Vue.use(Select);
 Vue.use(Tree);
+Vue.use(Alert);
 
 Vue.prototype.$echarts = echarts;
 Vue.prototype.$msg = Message;

@@ -2,20 +2,6 @@
   <div>
     <el-card>
       <div class="mgr-header">
-        <!-- 搜索角色 -->
-        <el-input
-          placeholder="请输入内容"
-          class="header-left"
-          v-model="inputVal"
-          clearable
-          @clear="getRoleList"
-        >
-          <el-button
-            slot="append"
-            icon="el-icon-search"
-            @click="getRoleList"
-          ></el-button>
-        </el-input>
         <div class="header-right">
           <!-- 权限功能 -->
           <el-button
@@ -29,87 +15,81 @@
         </div>
       </div>
 
-      <!-- 角色信息列表 -->
+      <!-- 部门信息列表 -->
       <el-table
         :data="tableData"
         style="width: 100% ;margin:15px 0;"
-        border
-        highlight-current-row
-        @cell-click="handleCurrentChange1"
-        ref="singleTable"
         max-height="740"
+        highlight-current-row
+        ref="singleTable"
+        @cell-click="handleCurrentChange1"
+        row-key="id"
+        border
+        :tree-props="{ children: 'children' }"
       >
-        <el-table-column label="角色" prop="name"> </el-table-column>
-        <el-table-column label="部门" prop="deptName"> </el-table-column>
-        <el-table-column label="ID" prop="id"> </el-table-column>
+        <el-table-column prop="simplename" label="部门简称" sortable>
+        </el-table-column>
+        <el-table-column prop="fullname" label="部门全称" sortable>
+        </el-table-column>
+        <el-table-column prop="id" label="部门ID"> </el-table-column>
       </el-table>
     </el-card>
 
-    <!-- 添加角色对话框 -->
-    <role-add
-      :type="btntype.roleAdd"
+    <!-- 创建部门对话框 -->
+    <dept-add
+      :type="btntype.deptAdd"
       :resetClose="resetClose"
-      tname="roleAdd"
-    ></role-add>
-
-    <!-- 修改角色信息对话框 -->
-    <role-edit
-      :type="btntype.roleEdit"
-      :resetClose="resetClose"
-      tname="roleEdit"
+      tname="deptAdd"
       :currentRow="currentRow"
-    ></role-edit>
+    ></dept-add>
+
+    <!-- 修改部门对话框 -->
+    <dept-edit
+      :type="btntype.deptEdit"
+      :resetClose="resetClose"
+      tname="deptEdit"
+      :currentRow="currentRow"
+    ></dept-edit>
 
     <!-- 删除角色对话框 -->
-    <role-delete
-      :type="btntype.roleDelete"
+    <dept-delete
+      :type="btntype.deptDelete"
       :resetClose="resetClose"
-      tname="roleDelete"
+      tname="deptDelete"
       :currentRow="currentRow"
-    ></role-delete>
+    ></dept-delete>
 
-    <!-- 设置角色对话框 -->
-    <set-authority
-      :type="btntype.roleSetAuthority"
-      :resetClose="resetClose"
-      tname="roleSetAuthority"
-      :currentRow="currentRow"
-    ></set-authority>
   </div>
 </template>
 
 <script>
-import { http, rolelist, role } from "../../api/api";
-import roleAdd from "./roleAdd";
-import roleEdit from "./roleEdit";
-import roleDelete from "./roleDelete";
-import setAuthority from "./setAuthority";
+import { http, deptlist } from "../../api/api";
+import deptAdd from "./deptAdd";
+import deptEdit from "./deptEdit";
+import deptDelete from "./deptDelete";
 export default {
   components: {
-    "role-add": roleAdd,
-    "role-edit": roleEdit,
-    "role-delete": roleDelete,
-    "set-authority": setAuthority
+    "dept-add": deptAdd,
+    "dept-edit": deptEdit,
+    "dept-delete": deptDelete,
+
   },
   data() {
     return {
-      //请求列表数据参数
-      inputVal: "",
-      //用户列表数据
+      //列表数据
       tableData: [],
       //功能对话框状态
       btntype: {
-        roleAdd: false,
-        roleEdit: false,
-        roleDelete: false,
-        roleSetAuthority: false
+        deptAdd: false,
+        deptEdit: false,
+        deptDelete: false,
       },
       //被选中数据
       currentRow: null
     };
   },
   mounted() {
-    this.getRoleList();
+    this.getDeptList();
   },
   computed: {
     //筛选启用权限功能
@@ -121,11 +101,12 @@ export default {
   },
   methods: {
     //获取角色信息列表
-    getRoleList() {
+    getDeptList() {
       this.$http
-        .get(http + rolelist, { params: { name: this.inputVal } })
+        .get(http + deptlist)
         .then(res => {
           if (res.data.msg == "成功") {
+            console.log(res.data.data);
             this.tableData = res.data.data;
           } else {
             this.$msg.error(res.data.message);
@@ -135,7 +116,7 @@ export default {
     },
     //不同功能权限的点击事件
     btn(key) {
-      if (key == "roleAdd") {
+      if (key == "deptAdd") {
         this.btntype[key] = true;
       } else {
         if (this.currentRow == null) {
@@ -164,7 +145,7 @@ export default {
     //重置功能对话框
     resetClose(type) {
       this.btntype[type] = false;
-      this.getRoleList();
+      this.getDeptList();
       this.currentRow = null;
       this.$refs.singleTable.setCurrentRow();
     }
@@ -187,12 +168,10 @@ export default {
 }
 .mgr-header {
   display: flex;
-  justify-content: space-between;
+  justify-content: left;
   align-items: center;
 }
-.header-left {
-  width: 300px;
-}
+
 .header-right {
   display: flex;
 }

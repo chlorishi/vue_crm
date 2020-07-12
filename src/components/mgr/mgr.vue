@@ -224,6 +224,7 @@ export default {
       this.btntype[type] = false;
       this.getUserList();
       this.currentRow = null;
+      this.$refs.singleTable.setCurrentRow();
     }
   }
 };
