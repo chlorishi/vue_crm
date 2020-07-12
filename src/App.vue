@@ -122,6 +122,7 @@ export default {
             });
           });
           this.$store.commit("setMenuList", json);
+          console.log(data);
         })
         .catch(err => this.$msg.error(err.data.message));
     },
@@ -195,5 +196,10 @@ export default {
 }
 .username-box {
   font-size: 14px;
+}
+
+.el-container {
+  min-width: 1366px;
+  user-select: none;
 }
 </style>

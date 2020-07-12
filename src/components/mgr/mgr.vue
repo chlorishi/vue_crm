@@ -178,7 +178,7 @@ export default {
             this.tableData = res.data.data.records;
             this.total = res.data.data.total;
           } else {
-            this.$msg.error(res.data.message);
+            this.$msg.error(res.data.msg);
           }
         })
         .catch(err => this.$msg.error(err.data.message));

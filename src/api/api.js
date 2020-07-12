@@ -34,6 +34,8 @@ const menuTreeListByRoleId = "/menu/menuTreeListByRoleId";
 const savePermisson = "/role/savePermisson";
 //添加,修改部门
 const dept = "/dept";
+//添加,修改菜单
+const menu = "/menu";
 module.exports = {
     http,
     login,
@@ -52,5 +54,6 @@ module.exports = {
     role,
     menuTreeListByRoleId,
     savePermisson,
-    dept
+    dept,
+    menu
 };

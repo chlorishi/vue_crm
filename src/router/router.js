@@ -5,6 +5,7 @@ import info from "../components/info/info.vue";
 import mgr from "../components/mgr/mgr.vue";
 import role from "../components/role/role.vue";
 import dept from "../components/dept/dept.vue";
+import menu from "../components/menu/menu.vue";
 Vue.use(VueRouter);
 
 const originalPush = VueRouter.prototype.push;
@@ -18,6 +19,7 @@ const routes = [
     { path: "/mgr", name: "mgr", component: mgr },
     { path: "/role", name: "role", component: role },
     { path: "/dept", name: "dept", component: dept },
+    { path: "/menu", name: "menu", component: menu },
 ];
 
 export default new VueRouter({ routes });
