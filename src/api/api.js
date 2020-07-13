@@ -36,6 +36,16 @@ const savePermisson = "/role/savePermisson";
 const dept = "/dept";
 //添加,修改菜单
 const menu = "/menu";
+//字典列表
+const dictlist = "/dict/list";
+//增删改字典
+const dict = "/dict";
+//增删改栏目
+const channel = "/channel";
+//文章
+const article = "/article";
+//图片
+const file = "/file";
 module.exports = {
     http,
     login,
@@ -55,5 +65,10 @@ module.exports = {
     menuTreeListByRoleId,
     savePermisson,
     dept,
-    menu
+    menu,
+    dictlist,
+    dict,
+    channel,
+    article,
+    file
 };

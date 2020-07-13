@@ -6,6 +6,10 @@ import mgr from "../components/mgr/mgr.vue";
 import role from "../components/role/role.vue";
 import dept from "../components/dept/dept.vue";
 import menu from "../components/menu/menu.vue";
+import dict from "../components/dict/dict.vue";
+import channel from "../components/channel/channel.vue";
+import articleEdit from "../components/articleEdit/articleEdit.vue";
+import article from "../components/article/article.vue";
 Vue.use(VueRouter);
 
 const originalPush = VueRouter.prototype.push;
@@ -20,6 +24,10 @@ const routes = [
     { path: "/role", name: "role", component: role },
     { path: "/dept", name: "dept", component: dept },
     { path: "/menu", name: "menu", component: menu },
+    { path: "/dict", name: "dict", component: dict },
+    { path: "/channel", name: "channel", component: channel },
+    { path: "/cms/articleEdit", name: "articleEdit", component: articleEdit },
+    { path: "/article", name: "article", component: article }
 ];
 
 export default new VueRouter({ routes });

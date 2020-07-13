@@ -163,6 +163,9 @@ export default {
   padding: 0;
   text-decoration: none;
 }
+a {
+  color: black;
+}
 .el-menu-vertical-demo:not(.el-menu--collapse) {
   width: 200px;
   min-height: 400px;

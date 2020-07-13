@@ -2,20 +2,6 @@
   <div>
     <el-card>
       <div class="mgr-header">
-        <!-- 搜索字典 -->
-        <el-input
-          placeholder="请输入内容"
-          class="header-left"
-          v-model="inputVal"
-          clearable
-          @clear="getDictList"
-        >
-          <el-button
-            slot="append"
-            icon="el-icon-search"
-            @click="getDictList"
-          ></el-button>
-        </el-input>
         <div class="header-right">
           <!-- 权限功能 -->
           <el-button
@@ -29,77 +15,76 @@
         </div>
       </div>
 
-      <!-- 字典信息列表 -->
+      <!-- 栏目信息列表 -->
       <el-table
         :data="tableData"
         style="width: 100% ;margin:15px 0;"
-        border
-        highlight-current-row
-        @cell-click="handleCurrentChange1"
-        ref="singleTable"
         max-height="740"
+        highlight-current-row
+        ref="singleTable"
+        @cell-click="handleCurrentChange1"
+        border
       >
-        <el-table-column label="名称" prop="name"> </el-table-column>
-        <el-table-column label="详情" prop="detail"> </el-table-column>
-        <el-table-column label="ID" prop="id"> </el-table-column>
+        <el-table-column prop="name" label="分类名称"> </el-table-column>
+        <el-table-column prop="modifyTime" label="更新时间" sortable>
+        </el-table-column>
+        <el-table-column prop="code" label="编码"> </el-table-column>
       </el-table>
     </el-card>
 
-    <!-- 添加字典对话框 -->
-    <dict-add
-      :type="btntype.dictAdd"
+    <!-- 创建栏目对话框 -->
+    <channel-add
+      :type="btntype.channeladd"
       :resetClose="resetClose"
-      tname="dictAdd"
-    ></dict-add>
-
-    <!-- 修改字典信息对话框 -->
-    <dict-edit
-      :type="btntype.dictEdit"
-      :resetClose="resetClose"
-      tname="dictEdit"
+      tname="channeladd"
       :currentRow="currentRow"
-    ></dict-edit>
+    ></channel-add>
 
-    <!-- 删除字典对话框 -->
-    <dict-delete
-      :type="btntype.dictDelete"
+    <!-- 修改栏目对话框 -->
+    <channel-edit
+      :type="btntype.channelEdit"
       :resetClose="resetClose"
-      tname="dictDelete"
+      tname="channelEdit"
       :currentRow="currentRow"
-    ></dict-delete>
+    ></channel-edit>
+
+    <!-- 删除栏目对话框 -->
+    <channel-delete
+      :type="btntype.channelDelete"
+      :resetClose="resetClose"
+      tname="channelDelete"
+      :currentRow="currentRow"
+    ></channel-delete>
   </div>
 </template>
 
 <script>
-import { http, dictlist } from "../../api/api";
-import dictAdd from "./dictAdd";
-import dictEdit from "./dictEdit";
-import dictDelete from "./dictDelete";
-
+import { http, channellist } from "../../api/api";
+import channelAdd from "./channelAdd";
+import channelEdit from "./channelEdit";
+import channelDelete from "./channelDelete";
 export default {
   components: {
-    "dict-add": dictAdd,
-    "dict-edit": dictEdit,
-    "dict-delete": dictDelete
+    "channel-add": channelAdd,
+    "channel-edit": channelEdit,
+    "channel-delete": channelDelete
   },
   data() {
     return {
-      //请求列表数据参数
-      inputVal: "",
-      //用户列表数据
+      //列表数据
       tableData: [],
       //功能对话框状态
       btntype: {
-        dictAdd: false,
-        dictEdit: false,
-        dictDelete: false
+        channeladd: false,
+        channelEdit: false,
+        channelDelete: false
       },
       //被选中数据
       currentRow: null
     };
   },
   mounted() {
-    this.getDictList();
+    this.getChannelList();
   },
   computed: {
     //筛选启用权限功能
@@ -110,35 +95,36 @@ export default {
     }
   },
   methods: {
-    //获取字典信息列表
-    getDictList() {
+    //获取栏目信息列表
+    getChannelList() {
       this.$http
-        .get(http + dictlist, { params: { name: this.inputVal } })
+        .get(http + channellist)
         .then(res => {
           if (res.data.msg == "成功") {
+            console.log(res.data.data);
             this.tableData = res.data.data;
           } else {
-            this.$msg.error(res.data.message);
+            this.$msg.error(res.data.msg);
           }
         })
         .catch(err => this.$msg.error(err.data.message));
     },
     //不同功能权限的点击事件
     btn(key) {
-      if (key == "dictAdd") {
+      if (key == "channeladd") {
         this.btntype[key] = true;
       } else {
         if (this.currentRow == null) {
-          this.$msg.error("请选择要操作的字典");
+          this.$msg.error("请选择要操作的栏目");
         } else {
           if (key == "mgrFreeze") {
             if (this.currentRow.statusName == "禁用") {
-              return this.$msg.info("该用户已经是禁用状态");
+              return this.$msg.info("该栏目已经是禁用状态");
             }
             this.btntype[key] = true;
           } else if (key == "mgrUnfreeze") {
             if (this.currentRow.statusName == "启用") {
-              return this.$msg.info("该用户已经是启用状态");
+              return this.$msg.info("该栏目已经是启用状态");
             }
             this.btntype[key] = true;
           } else {
@@ -154,7 +140,7 @@ export default {
     //重置功能对话框
     resetClose(type) {
       this.btntype[type] = false;
-      this.getDictList();
+      this.getChannelList();
       this.currentRow = null;
       this.$refs.singleTable.setCurrentRow();
     }
@@ -177,12 +163,10 @@ export default {
 }
 .mgr-header {
   display: flex;
-  justify-content: space-between;
+  justify-content: left;
   align-items: center;
 }
-.header-left {
-  width: 300px;
-}
+
 .header-right {
   display: flex;
 }

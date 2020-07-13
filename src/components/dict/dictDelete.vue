@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-dialog
-      title="删除部门"
+      title="删除字典"
       :visible.sync="dialogVisible"
       width="50%"
       @close="resetClose(tname)"
@@ -9,8 +9,8 @@
     >
       <div class="del">
         您确定要删除
-        <span>{{ currentRow.fullname }}</span>
-        部门吗？
+        <span>{{ currentRow.name }}</span>
+        吗？
       </div>
 
       <span slot="footer" class="dialog-footer">
@@ -22,11 +22,11 @@
 </template>
 
 <script>
-import { http, dept } from "../../api/api";
+import { http, dict } from "../../api/api";
 export default {
   data() {
     return {
-      dialogVisible: this.type,
+      dialogVisible: this.type
     };
   },
   props: ["type", "resetClose", "tname", "currentRow"],
@@ -38,12 +38,12 @@ export default {
   methods: {
     delDept() {
       this.$http
-        .delete(http + dept, {
+        .delete(http + dict, {
           params: { id: this.currentRow.id }
         })
         .then(res => {
           if (res.data.msg == "成功") {
-            this.$msg.success("删除部门成功");
+            this.$msg.success("删除成功");
             this.dialogVisible = false;
           } else {
             this.$msg.error(res.data.msg);

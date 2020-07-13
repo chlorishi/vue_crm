@@ -139,7 +139,7 @@ export default {
         this.btntype[key] = true;
       } else {
         if (this.currentRow == null) {
-          this.$msg.error("请选择要操作的用户");
+          this.$msg.error("请选择要操作的角色");
         } else {
           if (key == "mgrFreeze") {
             if (this.currentRow.statusName == "禁用") {
