@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" class="body-bg">
     <el-card>
       <el-form
         :model="loginForm"
@@ -56,8 +56,7 @@ export default {
               }
               this.$msg.success("登录成功");
               localStorage.token = res.data.data.token;
-              location.href = "/";
-              console.log(res.data.data.token);
+              location.href = "./";
             },
             err => this.$msg.error("登录失败")
           );
@@ -70,13 +69,31 @@ export default {
 };
 </script>
 
-<style scoped>
+<style  >
 .el-card {
   width: 500px;
-  margin: 150px auto;
+  left: 50%;
+  top: 50%;
+  position: absolute;
+  transform: translate(-50%, -50%);
 }
+
 .btns {
   display: flex;
   justify-content: flex-end;
+  margin-bottom: 0;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: url(./assets/1.jpg);
+  background-size: 100% auto;
 }
 </style>

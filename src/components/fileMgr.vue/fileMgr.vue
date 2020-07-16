@@ -2,11 +2,11 @@
   <div>
     <el-card>
       <div class="mgr-header">
-        <!-- 搜索用户 -->
+        <!-- 搜索文件 -->
         <el-input
           placeholder="请输入内容"
           class="header-left"
-          v-model="userListInfo.name"
+          v-model="fileInfo.originalFileName"
           clearable
           @clear="getUserList"
         >
@@ -16,20 +16,32 @@
             @click="getUserList"
           ></el-button>
         </el-input>
-        <div class="header-right">
-          <!-- 权限功能 -->
-          <el-button
+
+        <!-- 权限功能 -->
+        <!-- <el-button
             type="primary"
             v-for="item in menulist"
             :key="item.id"
             @click="btn(item.code)"
           >
             {{ item.name }}
-          </el-button>
-        </div>
+          </el-button> -->
+
+        <el-upload
+          class="upload-demo"
+          drag
+          :action="upfileurl"
+          multiple
+          :headers="headers"
+          :on-success="success"
+          :on-error="error"
+        >
+          <i class="el-icon-upload"></i>
+          <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+        </el-upload>
       </div>
 
-      <!-- 用户信息列表 -->
+      <!-- 文件信息列表 -->
       <el-table
         :data="tableData"
         style="width: 100% ;margin:15px 0;"
@@ -39,122 +51,112 @@
         ref="singleTable"
         max-height="740"
       >
-        <el-table-column type="expand">
-          <template slot-scope="props">
-            <el-form label-position="left" inline class="demo-table-expand">
-              <el-form-item label="昵称">
-                <span>{{ props.row.name }}</span>
-              </el-form-item>
-              <el-form-item label="账号">
-                <span>{{ props.row.account }}</span>
-              </el-form-item>
-              <el-form-item label="角色">
-                <span>{{ props.row.roleName }}</span>
-              </el-form-item>
-              <el-form-item label="部门">
-                <span>{{ props.row.deptName }}</span>
-              </el-form-item>
-              <el-form-item label="状态">
-                <span>{{ props.row.statusName }}</span>
-              </el-form-item>
-              <el-form-item label="创建时间">
-                <span>{{ props.row.createTime }}</span>
-              </el-form-item>
-              <el-form-item label="性别">
-                <span>{{ props.row.sex == "1" ? "男" : "女" }}</span>
-              </el-form-item>
-              <el-form-item label="手机号">
-                <span>{{ props.row.phone }}</span>
-              </el-form-item>
-              <el-form-item label="邮箱">
-                <span>{{ props.row.email }}</span>
-              </el-form-item>
-              <el-form-item label="生日">
-                <span>{{ props.row.birthday }}</span>
-              </el-form-item>
-            </el-form>
+        <el-table-column label="图片名称" prop="originalFileName">
+        </el-table-column>
+        <el-table-column label="id" prop="id"> </el-table-column>
+        <el-table-column label="创建时间" prop="createTime"> </el-table-column>
+        <el-table-column label="预览">
+          <template v-slot="props">
+            <img
+              :src="publicimg + props.row.originalFileName"
+              style="height:100px"
+            />
           </template>
         </el-table-column>
-        <el-table-column label="昵称" prop="name"> </el-table-column>
-        <el-table-column label="账号" prop="account"> </el-table-column>
-        <el-table-column label="状态" prop="statusName"> </el-table-column>
+        <el-table-column label="操作">
+          <template v-slot="props">
+            <el-button
+              type="primary"
+              size="mini"
+              @click="downloadFile(props.row)"
+              >下载</el-button
+            >
+          </template>
+        </el-table-column>
       </el-table>
       <!-- 分页 -->
       <el-pagination
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
-        :current-page="userListInfo.page"
+        :current-page="fileInfo.page"
         :page-sizes="[5, 8, 10, 15]"
-        :page-size="userListInfo.limit"
+        :page-size="fileInfo.limit"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total"
       >
       </el-pagination>
     </el-card>
-    <!-- 添加用户对话框 -->
-    <mgr-add
+    <!-- 添加文件对话框 -->
+    <!-- <mgr-add
       :type="btntype.mgrAdd"
       :resetClose="resetClose"
       tname="mgrAdd"
-    ></mgr-add>
-    <!-- 修改用户信息对话框 -->
-    <mgr-edit
+    ></mgr-add> -->
+    <!-- 修改文件信息对话框 -->
+    <!-- <mgr-edit
       :type="btntype.mgrEdit"
       :resetClose="resetClose"
       tname="mgrEdit"
       :currentRow="currentRow"
-    ></mgr-edit>
-    <!-- 删除用户信息对话框 -->
-    <mgr-delete
+    ></mgr-edit> -->
+    <!-- 删除文件信息对话框 -->
+    <!-- <mgr-delete
       :type="btntype.mgrDelete"
       :resetClose="resetClose"
       tname="mgrDelete"
       :currentRow="currentRow"
-    ></mgr-delete>
+    ></mgr-delete> -->
     <!-- 设置角色对话框 -->
-    <mgr-set-role
+    <!-- <mgr-set-role
       :type="btntype.mgrSetRole"
       :resetClose="resetClose"
       tname="mgrSetRole"
       :currentRow="currentRow"
-    ></mgr-set-role>
+    ></mgr-set-role> -->
   </div>
 </template>
 
 <script>
-import { http, userlist } from "../../api/api";
-import mgrAdd from "./mgrAdd";
-import mgrEdit from "./mgrEdit";
-import mgrDelete from "./mgrDelete";
-import mgrSetRole from "./mgrSetRole";
+import { http, filelist, downloadfile, publicimg, file } from "../../api/api";
+// import mgrAdd from "./mgrAdd";
+// import mgrEdit from "./mgrEdit";
+// import mgrDelete from "./mgrDelete";
+// import mgrSetRole from "./mgrSetRole";
 export default {
   components: {
-    "mgr-add": mgrAdd,
-    "mgr-edit": mgrEdit,
-    "mgr-delete": mgrDelete,
-    "mgr-set-role": mgrSetRole
+    // "mgr-add": mgrAdd,
+    // "mgr-edit": mgrEdit,
+    // "mgr-delete": mgrDelete,
+    // "mgr-set-role": mgrSetRole
   },
   data() {
     return {
       //请求列表数据参数
-      userListInfo: {
+      fileInfo: {
         page: 1,
         limit: 5,
-        name: ""
+        originalFileName: ""
       },
-      //用户列表数据
+      //文件列表数据
       tableData: [],
       //总页数
       total: 0,
       //功能对话框状态
       btntype: {
-        mgrAdd: false,
-        mgrEdit: false,
-        mgrDelete: false,
-        mgrSetRole: false
+        // mgrAdd: false,
+        // mgrEdit: false,
+        // mgrDelete: false,
+        // mgrSetRole: false
       },
       //被选中数据
-      currentRow: null
+      currentRow: null,
+      publicimg: publicimg,
+      upfileurl: http + file, //文件上传的地址
+      headers: {
+        //文件上传的请求头
+        "constnet-type": "multipart/form-data",
+        Authorization: localStorage.token
+      }
     };
   },
   mounted() {
@@ -169,14 +171,36 @@ export default {
     }
   },
   methods: {
-    //获取用户信息列表
+    success(data) {
+      if (data.msg == "成功") {
+        this.getUserList();
+      } else {
+        this.$message.error(data.message);
+      }
+    },
+    error(err) {
+      this.$message.error(err.message);
+    },
+    downloadFile(row) {
+      //下载按钮
+      location.href =
+        http +
+        downloadfile +
+        "?idFile=" +
+        row.id +
+        "&fileName=" +
+        row.originalFileName;
+    },
+
+    //获取文件信息列表
     getUserList() {
       this.$http
-        .get(http + userlist, { params: this.userListInfo })
+        .get(http + filelist, { params: this.fileInfo })
         .then(res => {
           if (res.data.msg == "成功") {
             this.tableData = res.data.data.records;
             this.total = res.data.data.total;
+            console.log(this.tableData);
           } else {
             this.$msg.error(res.data.msg);
           }
@@ -184,11 +208,11 @@ export default {
         .catch(err => this.$msg.error(err.data.message));
     },
     handleSizeChange(val) {
-      this.userListInfo.limit = val;
+      this.fileInfo.limit = val;
       this.getUserList();
     },
     handleCurrentChange(val) {
-      this.userListInfo.page = val;
+      this.fileInfo.page = val;
       this.getUserList();
     },
     //不同功能权限的点击事件
@@ -197,16 +221,16 @@ export default {
         this.btntype[key] = true;
       } else {
         if (this.currentRow == null) {
-          this.$msg.error("请选择要操作的用户");
+          this.$msg.error("请选择要操作的文件");
         } else {
           if (key == "mgrFreeze") {
             if (this.currentRow.statusName == "禁用") {
-              return this.$msg.info("该用户已经是禁用状态");
+              return this.$msg.info("该文件已经是禁用状态");
             }
             this.btntype[key] = true;
           } else if (key == "mgrUnfreeze") {
             if (this.currentRow.statusName == "启用") {
-              return this.$msg.info("该用户已经是启用状态");
+              return this.$msg.info("该文件已经是启用状态");
             }
             this.btntype[key] = true;
           } else {
@@ -230,7 +254,7 @@ export default {
 };
 </script>
 
-<style scoped >
+<style scoped>
 .demo-table-expand {
   font-size: 0;
 }
@@ -251,7 +275,9 @@ export default {
 .header-left {
   width: 300px;
 }
-.header-right {
-  display: flex;
+
+.upload-demo>>>.el-upload-dragger {
+  width: 200px;
+  height: 150px;
 }
 </style>

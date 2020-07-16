@@ -24,7 +24,7 @@
           >
             <template slot="title">
               <i :class="iconType[item.id]"></i>
-              <span slot="title">{{ item.name }}{{ item.path }}</span>
+              <span slot="title">{{ item.name }}</span>
             </template>
             <el-menu-item
               v-for="item1 in item.children"
@@ -35,7 +35,7 @@
               "
             >
               <i :class="iconType[item1.id]"></i>
-              <span slot="title">{{ item1.name }}{{ item1.path }}</span>
+              <span slot="title">{{ item1.name }}</span>
             </el-menu-item>
           </el-submenu>
         </el-menu>
@@ -65,7 +65,9 @@
           </div>
         </div>
 
-        <div><router-view></router-view></div>
+        <div>
+          <router-view></router-view>
+        </div>
       </el-main>
     </el-container>
   </div>

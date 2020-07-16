@@ -46,6 +46,13 @@ const channel = "/channel";
 const article = "/article";
 //图片
 const file = "/file";
+//文章列表接口
+const articlelist = "/article/list";
+//获取文件信息接口
+const filelist = "/fileMgr/list";
+const downloadfile = "/file/download";
+//图片静态地址
+const publicimg = "http://39.101.217.150/statics/";
 module.exports = {
     http,
     login,
@@ -70,5 +77,9 @@ module.exports = {
     dict,
     channel,
     article,
-    file
+    file,
+    articlelist,
+    filelist,
+    downloadfile,
+    publicimg
 };

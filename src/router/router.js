@@ -10,6 +10,7 @@ import dict from "../components/dict/dict.vue";
 import channel from "../components/channel/channel.vue";
 import articleEdit from "../components/articleEdit/articleEdit.vue";
 import article from "../components/article/article.vue";
+import fileMgr from "../components/fileMgr.vue/fileMgr.vue";
 Vue.use(VueRouter);
 
 const originalPush = VueRouter.prototype.push;
@@ -27,7 +28,8 @@ const routes = [
     { path: "/dict", name: "dict", component: dict },
     { path: "/channel", name: "channel", component: channel },
     { path: "/cms/articleEdit", name: "articleEdit", component: articleEdit },
-    { path: "/article", name: "article", component: article }
+    { path: "/article", name: "article", component: article },
+    { path: "/fileMgr", name: "fileMgr", component: fileMgr }
 ];
 
 export default new VueRouter({ routes });

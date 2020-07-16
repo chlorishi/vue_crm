@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div id="main" style="width:600px ; height:400px"></div>
+    <el-card> <div id="main" style="width:800px; height:400px"></div></el-card>
   </div>
 </template>
 
@@ -38,7 +38,7 @@ export default {
         series: [
           {
             name: "数量",
-            type: "bar",
+            type: "line",
             data: arr2
           }
         ]

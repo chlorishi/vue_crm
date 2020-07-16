@@ -4,6 +4,9 @@ import resource from "vue-resource";
 import echarts from "echarts";
 import router from "./router/router";
 import store from "./store/index";
+import "./assets/css/common.css";
+import NProgress from "nprogress";
+import "nprogress/nprogress.css";
 import {
     Button,
     Form,
@@ -34,7 +37,8 @@ import {
     Option,
     Select,
     Tree,
-    Alert
+    Alert,
+    Upload
 } from "element-ui";
 Vue.use(Button);
 Vue.use(Form);
@@ -47,6 +51,7 @@ Vue.use(Main);
 Vue.use(RadioGroup);
 Vue.use(RadioButton);
 Vue.use(Menu);
+Vue.use(Upload);
 Vue.use(MenuItem);
 Vue.use(MenuItemGroup);
 Vue.use(Submenu);
@@ -85,6 +90,15 @@ Vue.http.interceptors.push((request, next) => {
         }
         return response;
     });
+});
+
+router.beforeEach((to, from, next) => {
+    NProgress.start();
+    next();
+});
+
+router.afterEach(() => {
+    NProgress.done();
 });
 
 new Vue({

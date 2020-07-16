@@ -1,7 +1,6 @@
 <template>
   <div>
     <el-card>
-      {{ articleEditForm }}
       <el-form
         :model="articleEditForm"
         :rules="rules"
@@ -36,7 +35,13 @@
               </el-select>
             </el-form-item>
           </div>
-          <el-button type="primary" @click="a">发布文章</el-button>
+          <el-button
+            type="primary"
+            @click="addArt"
+            v-if="Object.keys(this.$route.params).length === 0"
+            >发布文章</el-button
+          >
+          <el-button type="primary" @click="editArt" v-else>修改文章</el-button>
         </div>
       </el-form>
       <div>
@@ -96,16 +101,15 @@ export default {
     };
     this.editor.create();
     this.getChannelList();
+
+    if (Object.keys(this.$route.params).length !== 0) {
+      this.articleEditForm = this.$route.params;
+      this.editor.txt.html(this.articleEditForm.content);
+    }
   },
 
   methods: {
-    a() {
-      let json = {
-        author: this.$store.state.user.info.profile.name,
-        content: this.editor.txt.html().replace(/\%/g, "%25"),
-        idChannel: this.articleEditForm.idChannel,
-        title: this.articleEditForm.title
-      };
+    tijiao(json) {
       var flag = true;
       for (var i in json) {
         if (json[i] == "") {
@@ -118,7 +122,7 @@ export default {
           .then(res => {
             if (res.data.msg == "成功") {
               this.$msg.success("提交成功");
-              this.$router.push('/article')
+              this.$router.push("/article");
             } else {
               this.$msg.error(res.data.msg);
             }
@@ -127,6 +131,27 @@ export default {
       } else {
         this.$msg.error("请补全数据");
       }
+    },
+    //发布文章
+    addArt() {
+      let json = {
+        author: this.$store.state.user.info.profile.name,
+        content: this.editor.txt.html().replace(/\%/g, "%25"),
+        idChannel: this.articleEditForm.idChannel,
+        title: this.articleEditForm.title
+      };
+     this.tijiao(json);
+    },
+    //修改文章
+    editArt() {
+      let json = {
+        id: this.$route.params.id,
+        author: this.$store.state.user.info.profile.name,
+        content: this.editor.txt.html().replace(/\%/g, "%25"),
+        idChannel: this.articleEditForm.idChannel,
+        title: this.articleEditForm.title
+      };
+      this.tijiao(json);
     },
     getChannelList() {
       this.$http
