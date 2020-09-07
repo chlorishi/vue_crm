@@ -29,28 +29,38 @@ export default {
     return {
       loginForm: {
         username: "",
-        password: ""
+        password: "",
       },
       loginFormRules: {
         username: [
           { required: true, message: "请输入账号", trigger: "blur" },
-          { min: 3, max: 10, message: "长度在 3 到 10 个字符", trigger: "blur" }
+          {
+            min: 3,
+            max: 10,
+            message: "长度在 4 到 10 个字符",
+            trigger: "blur",
+          },
         ],
         password: [
           { required: true, message: "请输入密码", trigger: "blur" },
-          { min: 5, max: 15, message: "长度在 5 到 15 个字符", trigger: "blur" }
-        ]
-      }
+          {
+            min: 5,
+            max: 15,
+            message: "长度在 5 到 15 个字符",
+            trigger: "blur",
+          },
+        ],
+      },
     };
   },
   methods: {
     login() {
-      this.$refs.loginFormRef.validate(valid => {
+      this.$refs.loginFormRef.validate((valid) => {
         if (!valid) return this.$msg.error("表单校验失败");
         this.$http
           .post(http + login, this.loginForm, { emulateJSON: true })
           .then(
-            res => {
+            (res) => {
               if (res.data.msg === "用户名或密码错误") {
                 return this.$msg.error("用户名或密码错误");
               }
@@ -58,18 +68,18 @@ export default {
               localStorage.token = res.data.data.token;
               location.href = "./";
             },
-            err => this.$msg.error("登录失败")
+            (err) => this.$msg.error("登录失败")
           );
       });
     },
     resetForm() {
       this.$refs.loginFormRef.resetFields();
-    }
-  }
+    },
+  },
 };
 </script>
 
-<style  >
+<style>
 .el-card {
   width: 500px;
   left: 50%;
